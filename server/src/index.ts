@@ -5,10 +5,9 @@ import express, {
   RequestHandler,
   Response,
 } from "express";
-import { db } from "./datastore/index.js";
+import { createPost, listPosts } from "./controllers/postController.js";
 
 config();
-
 const app = express();
 app.use(express.json());
 const port = process.env.PORT || 3000;
@@ -28,15 +27,9 @@ const requestLoggerMiddleware: RequestHandler = (req, _res, next) => {
   next();
 };
 
-app.get("/posts", (request, response) => {
-  response.json({ posts: db.listsPosts() });
-});
+app.get("/posts", listPosts);
 
-app.post("/posts", (req, res) => {
-  const post = req.body;
-  db.createPost(post);
-  res.json({ msg: "Done" }).status(200);
-});
+app.post("/posts", createPost);
 
 app.use(requestLoggerMiddleware);
 app.use("/", (_req, res) => {
