@@ -1,10 +1,12 @@
 import { config } from "dotenv";
 import express, {
+  ErrorRequestHandler,
   NextFunction,
   Request,
   RequestHandler,
   Response,
 } from "express";
+import expressAsyncHandler from "express-async-handler";
 import { createPost, listPosts } from "./controllers/postController.js";
 
 config();
@@ -27,14 +29,20 @@ const requestLoggerMiddleware: RequestHandler = (req, _res, next) => {
   next();
 };
 
-app.get("/posts", listPosts);
+app.get("/v1/posts", expressAsyncHandler(listPosts));
 
-app.post("/posts", createPost);
+app.post("/v1/posts", expressAsyncHandler(createPost));
 
 app.use(requestLoggerMiddleware);
 app.use("/", (_req, res) => {
   res.json({ msg: "Server running..." });
 });
+
+const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+  console.log(err);
+  res.status(500).json({ msg: "Oops!, Unexpected error" });
+};
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Listening on port: ${port}`);

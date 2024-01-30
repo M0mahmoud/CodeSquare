@@ -1,22 +1,28 @@
 import { randomUUID } from "crypto";
+import {
+  CreatePostReq,
+  CreatePostRes,
+  ListPostRes,
+  ListPostsReq,
+} from "../api.js";
 import { db } from "../datastore/index.js";
-import { ExpressHandler, Post } from "../types.js";
+import { ExpressHandler } from "../types.js";
 
-export const listPosts: ExpressHandler<{}, {}> = (_req, res) => {
-  res.json({ posts: db.listsPosts() });
+export const listPosts: ExpressHandler<ListPostsReq, ListPostRes> = async (
+  _req,
+  res
+) => {
+  res.json({ posts: await db.listsPosts() });
 };
 
-interface CreatePostResponse {}
-type CreatePostRequest = Pick<Post, "title" | "url" | "userId">;
-
-export const createPost: ExpressHandler<
-  CreatePostRequest,
-  CreatePostResponse
-> = (req, res) => {
-  console.log("req:", req.body);
+export const createPost: ExpressHandler<CreatePostReq, CreatePostRes> = async (
+  req,
+  res
+) => {
   if (!req.body.title || !req.body.userId || !req.body.url) {
-    return res.status(400).json({ msg: "Error" });
+    return res.status(400).json({ msg: "Something missing..." });
   }
+  // TODO: Validating the data.
   const post = {
     id: randomUUID(),
     postAt: Date.now(),
@@ -25,6 +31,6 @@ export const createPost: ExpressHandler<
     userId: req.body.userId,
   };
 
-  db.createPost(post);
+  await db.createPost(post);
   return res.status(200).json({ msg: "Post Created..." });
 };
