@@ -25,7 +25,7 @@ export const createPost: ExpressHandler<CreatePostReq, CreatePostRes> = async (
   // TODO: Validating the data.
   const post = {
     id: randomUUID(),
-    postAt: Date.now(),
+    postedAt: Date.now(),
     title: req.body.title,
     url: req.body.url,
     userId: req.body.userId,

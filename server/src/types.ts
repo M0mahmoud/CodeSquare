@@ -14,7 +14,7 @@ export interface Post {
   title: string;
   url: string;
   userId: string;
-  postAt: number;
+  postedAt: number;
 }
 
 export interface Comment {
@@ -22,7 +22,7 @@ export interface Comment {
   userId: string;
   postId: string;
   comment: string;
-  postAt: number;
+  postedAt: number;
 }
 
 export interface Like {
