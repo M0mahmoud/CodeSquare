@@ -42,12 +42,14 @@ export class SqlDataStore implements DataStore {
 
   async getUserByEmail(email: string): Promise<User | undefined> {
     if (!this.db) throw new Error("Database not opened");
-    return await this.db.get("SELECT * FROM users WHERE email = ?", [email]);
+    return await this.db.get<User>("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     if (!this.db) throw new Error("Database not opened");
-    return await this.db.get("SELECT * FROM users WHERE username = ?", [
+    return await this.db.get<User>("SELECT * FROM users WHERE username = ?", [
       username,
     ]);
   }

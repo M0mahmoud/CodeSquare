@@ -8,6 +8,7 @@ import express, {
 } from "express";
 import expressAsyncHandler from "express-async-handler";
 import { createPost, listPosts } from "./controllers/postController.js";
+import { SignInHandler, SignUpHandler } from "./controllers/userController.js";
 import { initDB } from "./datastore/index.js";
 
 (async () => {
@@ -36,8 +37,9 @@ import { initDB } from "./datastore/index.js";
   };
 
   app.get("/v1/posts", expressAsyncHandler(listPosts));
-
   app.post("/v1/posts", expressAsyncHandler(createPost));
+  app.post("/v1/signup", expressAsyncHandler(SignUpHandler));
+  app.post("/v1/signin", expressAsyncHandler(SignInHandler));
 
   app.use(requestLoggerMiddleware);
   app.use("/", (_req, res) => {
