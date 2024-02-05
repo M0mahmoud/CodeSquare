@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { pbkdf2Sync, randomUUID } from "crypto";
 import { SignInReq, SignInRes, SignUpReq, SignUpRes } from "../api.js";
 import { signJWT } from "../auth.js";
 import { db } from "../datastore/index.js";
@@ -26,7 +26,7 @@ export const SignUpHandler: ExpressHandler<SignUpReq, SignUpRes> = async (
     firstName,
     lastName,
     username,
-    password,
+    password: hashPass(password),
   };
   const jwt = signJWT({ userId: newUser.id });
   await db.createUser(newUser);
@@ -45,7 +45,7 @@ export const SignInHandler: ExpressHandler<SignInReq, SignInRes> = async (
 
   const existingUser =
     (await db.getUserByEmail(login)) || (await db.getUserByUsername(login));
-  if (!existingUser || existingUser.password !== password) {
+  if (!existingUser || existingUser.password !== hashPass(password)) {
     return res.sendStatus(403);
   }
 
@@ -63,4 +63,14 @@ export const SignInHandler: ExpressHandler<SignInReq, SignInRes> = async (
       lastName: existingUser.lastName,
     },
   });
+};
+
+const hashPass = (password: string): string => {
+  return pbkdf2Sync(
+    password,
+    process.env.PASSWORD_SALT!,
+    Number(process.env.PASSWORD_ITERATIONS!),
+    Number(process.env.PASSWORD_KEYLEN!),
+    process.env.PASSWORD_DIGEST!
+  ).toString();
 };
