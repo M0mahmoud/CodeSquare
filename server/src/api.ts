@@ -6,7 +6,7 @@ export interface ListPostRes {
   posts: Post[];
 }
 export interface CreatePostRes {}
-export type CreatePostReq = Pick<Post, "title" | "url" | "userId">;
+export type CreatePostReq = Pick<Post, "title" | "url">;
 
 export interface GetPostReq {}
 export interface GetPostRes {

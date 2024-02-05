@@ -19,7 +19,7 @@ export const createPost: ExpressHandler<CreatePostReq, CreatePostRes> = async (
   req,
   res
 ) => {
-  if (!req.body.title || !req.body.userId || !req.body.url) {
+  if (!req.body.title || !req.body.url) {
     return res.status(400).json({ msg: "Something missing..." });
   }
   // TODO: Validating the data.
@@ -28,7 +28,7 @@ export const createPost: ExpressHandler<CreatePostReq, CreatePostRes> = async (
     postedAt: Date.now(),
     title: req.body.title,
     url: req.body.url,
-    userId: req.body.userId,
+    userId: "WillEdit",
   };
 
   await db.createPost(post);

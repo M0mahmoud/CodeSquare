@@ -1,15 +1,11 @@
 import { config } from "dotenv";
-import express, {
-  ErrorRequestHandler,
-  NextFunction,
-  Request,
-  RequestHandler,
-  Response,
-} from "express";
+import express, { NextFunction, Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
+import { SignInHandler, SignUpHandler } from "./controllers/authController.js";
 import { createPost, listPosts } from "./controllers/postController.js";
-import { SignInHandler, SignUpHandler } from "./controllers/userController.js";
 import { initDB } from "./datastore/index.js";
+import { errorHandler } from "./middleware/erro.js";
+import { requestLoggerMiddleware } from "./middleware/logger.js";
 
 (async () => {
   await initDB();
@@ -31,25 +27,16 @@ import { initDB } from "./datastore/index.js";
     next();
   });
 
-  const requestLoggerMiddleware: RequestHandler = (req, _res, next) => {
-    console.log("New Request", req.path);
-    next();
-  };
+  //Middleware
+  app.use(requestLoggerMiddleware);
 
+  // Routes
   app.get("/v1/posts", expressAsyncHandler(listPosts));
   app.post("/v1/posts", expressAsyncHandler(createPost));
   app.post("/v1/signup", expressAsyncHandler(SignUpHandler));
   app.post("/v1/signin", expressAsyncHandler(SignInHandler));
 
-  app.use(requestLoggerMiddleware);
-  app.use("/", (_req, res) => {
-    res.json({ msg: "Server running..." });
-  });
-
-  const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
-    console.log(err);
-    res.status(500).json({ msg: "Oops!, Unexpected error" });
-  };
+  // Error
   app.use(errorHandler);
 
   app.listen(port, () => {
