@@ -40,6 +40,11 @@ export class SqlDataStore implements DataStore {
     );
   }
 
+  async getUserById(id: string): Promise<User | undefined> {
+    if (!this.db) throw new Error("Database not opened");
+    return await this.db.get<User>("SELECT * FROM users WHERE id = ?", [id]);
+  }
+
   async getUserByEmail(email: string): Promise<User | undefined> {
     if (!this.db) throw new Error("Database not opened");
     return await this.db.get<User>("SELECT * FROM users WHERE email = ?", [

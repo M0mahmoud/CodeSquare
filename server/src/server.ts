@@ -4,8 +4,9 @@ import expressAsyncHandler from "express-async-handler";
 import { SignInHandler, SignUpHandler } from "./controllers/authController.js";
 import { createPost, listPosts } from "./controllers/postController.js";
 import { initDB } from "./datastore/index.js";
-import { errorHandler } from "./middleware/erro.js";
-import { requestLoggerMiddleware } from "./middleware/logger.js";
+import authMiddleware from "./middleware/authMiddleware.js";
+import errorHandler from "./middleware/errorMiddleware.js";
+import requestLoggerMiddleware from "./middleware/loggerMiddleware.js";
 
 (async () => {
   await initDB();
@@ -31,10 +32,15 @@ import { requestLoggerMiddleware } from "./middleware/logger.js";
   app.use(requestLoggerMiddleware);
 
   // Routes
-  app.get("/v1/posts", expressAsyncHandler(listPosts));
-  app.post("/v1/posts", expressAsyncHandler(createPost));
+  // Public
   app.post("/v1/signup", expressAsyncHandler(SignUpHandler));
   app.post("/v1/signin", expressAsyncHandler(SignInHandler));
+
+  app.use(authMiddleware);
+
+  // Private
+  app.get("/v1/posts", expressAsyncHandler(listPosts));
+  app.post("/v1/posts", expressAsyncHandler(createPost));
 
   // Error
   app.use(errorHandler);

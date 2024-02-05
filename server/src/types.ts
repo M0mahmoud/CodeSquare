@@ -30,10 +30,16 @@ export interface Like {
   postId: string;
 }
 
+type withError<T> = T & { msg: string };
+
 // TODO: Need More Explain for this.
 export type ExpressHandler<Req, Res> = RequestHandler<
   string,
-  Partial<Res>,
+  Partial<withError<Res>>,
   Partial<Req>,
   any
 >;
+
+export interface JwtObject {
+  userId: string;
+}

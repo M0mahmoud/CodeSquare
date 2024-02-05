@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import { SignInReq, SignInRes, SignUpReq, SignUpRes } from "../api.js";
+import { signJWT } from "../auth.js";
 import { db } from "../datastore/index.js";
 import { ExpressHandler, User } from "../types.js";
 
@@ -27,8 +28,9 @@ export const SignUpHandler: ExpressHandler<SignUpReq, SignUpRes> = async (
     username,
     password,
   };
+  const jwt = signJWT({ userId: newUser.id });
   await db.createUser(newUser);
-  return res.sendStatus(200);
+  return res.status(200).json({ jwt });
 };
 
 export const SignInHandler: ExpressHandler<SignInReq, SignInRes> = async (
@@ -47,11 +49,18 @@ export const SignInHandler: ExpressHandler<SignInReq, SignInRes> = async (
     return res.sendStatus(403);
   }
 
+  const jwt = signJWT({
+    userId: existingUser.id,
+  });
+
   return res.status(200).json({
-    id: existingUser.id,
-    email: existingUser.email,
-    username: existingUser.username,
-    firstName: existingUser.firstName,
-    lastName: existingUser.lastName,
+    jwt,
+    user: {
+      id: existingUser.id,
+      email: existingUser.email,
+      username: existingUser.username,
+      firstName: existingUser.firstName,
+      lastName: existingUser.lastName,
+    },
   });
 };
