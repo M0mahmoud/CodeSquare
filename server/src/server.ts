@@ -33,6 +33,12 @@ import requestLoggerMiddleware from "./middleware/loggerMiddleware.js";
 
   // Routes
   // Public
+
+  // Check Server
+  app.get("/healthz", (_req, res) => {
+    res.json({ status: "OK" }).status(200);
+  });
+
   app.post("/v1/signup", expressAsyncHandler(SignUpHandler));
   app.post("/v1/signin", expressAsyncHandler(SignInHandler));
 
