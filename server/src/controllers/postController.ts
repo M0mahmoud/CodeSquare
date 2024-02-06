@@ -28,7 +28,7 @@ export const createPost: ExpressHandler<CreatePostReq, CreatePostRes> = async (
     postedAt: Date.now(),
     title: req.body.title,
     url: req.body.url,
-    userId: "WillEdit",
+    userId: res.locals.userId,
   };
 
   await db.createPost(post);
