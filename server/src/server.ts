@@ -41,11 +41,11 @@ import requestLoggerMiddleware from "./middleware/loggerMiddleware.js";
 
   app.post("/v1/signup", expressAsyncHandler(SignUpHandler));
   app.post("/v1/signin", expressAsyncHandler(SignInHandler));
+  app.get("/v1/posts", expressAsyncHandler(listPosts));
 
   app.use(authMiddleware);
 
   // Private
-  app.get("/v1/posts", expressAsyncHandler(listPosts));
   app.post("/v1/posts", expressAsyncHandler(createPost));
 
   // Error
