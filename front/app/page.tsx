@@ -1,18 +1,23 @@
-async function getData() {
-  const res = await fetch("http://localhost:8000/v1/posts");
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-
-  return res.json();
-}
+import Link from "next/link";
+import { listPosts } from "./action";
 
 export default async function Home() {
-  const data = await getData();
-  console.log("data:", data);
+  const data = await listPosts();
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <h1 className="text-2xl font-semibold text-blue-700">CoderSquares</h1>
+      <div>
+        {data.posts.map((post) => (
+          <Link
+            key={post.id}
+            className="border border-blue-500 py-2 px-3"
+            href={post.url}
+          >
+            {post.title}
+          </Link>
+        ))}
+      </div>
     </main>
   );
 }
