@@ -1,3 +1,4 @@
+import { ModeToggle } from "@/components/ModeToggle";
 import Link from "next/link";
 import { listPosts } from "./action";
 
@@ -6,6 +7,9 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <div>
+        <ModeToggle />
+      </div>
       <h1 className="text-2xl font-semibold text-blue-700">CoderSquares</h1>
       <div>
         {data.posts.map((post) => (
