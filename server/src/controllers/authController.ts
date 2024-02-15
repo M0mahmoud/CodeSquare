@@ -11,7 +11,7 @@ export const SignUpHandler: ExpressHandler<SignUpReq, SignUpRes> = async (
   // TODO: validations
   const { email, firstName, lastName, password, username } = req.body;
   if (!email || !firstName || !lastName || !password || !username) {
-    return res.status(400).json({ msg: "Something missing..." });
+    return res.status(400).json({ msg: "required..." });
   }
 
   const existingUser =
@@ -40,13 +40,16 @@ export const SignInHandler: ExpressHandler<SignInReq, SignInRes> = async (
   // TODO: validations
   const { login, password } = req.body;
   if (!login || !password) {
-    return res.sendStatus(400);
+    return res.status(400).json({ msg: "required..." });
   }
 
   const existingUser =
     (await db.getUserByEmail(login)) || (await db.getUserByUsername(login));
-  if (!existingUser || existingUser.password !== hashPass(password)) {
-    return res.sendStatus(403);
+
+  if (!existingUser) {
+    return res.status(403).json({ msg: "Invalid email or username" });
+  } else if (existingUser.password !== hashPass(password)) {
+    return res.status(403).json({ msg: "Incorrect password" });
   }
 
   const jwt = signJWT({

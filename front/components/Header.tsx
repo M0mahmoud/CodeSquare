@@ -26,18 +26,10 @@ const Header = () => {
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink
-              href="/signin"
+              href="/auth"
               className={cn(`${navigationMenuTriggerStyle()} bg-secondary`)}
             >
               SignIn
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              href="/signup"
-              className={navigationMenuTriggerStyle()}
-            >
-              SignUp
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>

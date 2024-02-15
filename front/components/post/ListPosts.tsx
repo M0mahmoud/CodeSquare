@@ -1,4 +1,4 @@
-import { listPosts } from "@/app/action";
+import { listPosts } from "@/app/server/PostServer";
 import React from "react";
 import Post from "./Post";
 
